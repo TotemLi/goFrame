@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-// Repr 将传入的v转成string
+// Repr convert ant type to string
 func Repr(v interface{}) string {
 	if v == nil {
 		return ""
