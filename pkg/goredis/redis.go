@@ -5,10 +5,11 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/go-redis/redis/v8"
+	"goFrame/pkg/stringx"
 	"time"
 )
 
-var ErrNotFind = errors.New("not found")
+var ErrNotFind = redis.Nil
 var ErrMarshal = errors.New("marshal error")
 
 type RedisClient struct {
@@ -38,10 +39,10 @@ func (r *RedisClient) Set(ctx context.Context, key string, data any, tm ...int64
 	return err
 }
 
-func (r *RedisClient) Get(ctx context.Context, key string) (string, error) {
-	val, err := r.client.Get(ctx, key).Result()
-	if err == redis.Nil {
-		return "", ErrNotFind
+func (r *RedisClient) Get(ctx context.Context, key string, ptr any) error {
+	valStr, err := r.client.Get(ctx, key).Result()
+	if err != nil {
+		return err
 	}
-	return val, err
+	return stringx.StrCopyToPtr(valStr, ptr)
 }
