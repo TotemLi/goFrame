@@ -1,6 +1,7 @@
 package stringx
 
 import (
+	"encoding/json"
 	"errors"
 	"reflect"
 	"strconv"
@@ -55,6 +56,8 @@ func StrCopyToPtr(valStr string, ptr any) error {
 		*(v.Interface().(*float32)) = float32(i)
 	case reflect.Float64:
 		*(v.Interface().(*float64)), err = strconv.ParseFloat(valStr, 64)
+	case reflect.Slice, reflect.Map, reflect.Struct:
+		err = json.Unmarshal([]byte(valStr), v.Interface())
 	default:
 		err = errors.New("stringx.StrCopyToPtr can't support type: " + v.Type().String())
 	}
