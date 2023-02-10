@@ -2,6 +2,7 @@ package goredis
 
 import (
 	"context"
+	"github.com/stretchr/testify/require"
 	"testing"
 )
 
@@ -16,9 +17,11 @@ func TestNewClient(t *testing.T) {
 		Name: "TotemLi",
 		Age:  24,
 	}
-	c.Set(ctx, "totemli", stu)
+	var err error
+	err = c.Set(ctx, "totemli", stu)
+	require.NoError(t, err)
 	var stu2 Student
-	err := c.Get(ctx, "totemli", &stu2)
-	t.Log("err: ", err)
-	t.Log("stu2: ", stu2)
+	err = c.Get(ctx, "totemli", &stu2)
+	require.NoError(t, err)
+	require.EqualValues(t, stu, stu2)
 }

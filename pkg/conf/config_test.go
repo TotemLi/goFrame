@@ -1,6 +1,9 @@
 package conf
 
-import "testing"
+import (
+	"github.com/stretchr/testify/require"
+	"testing"
+)
 
 func TestLoadConfig(t *testing.T) {
 	var val struct {
@@ -12,6 +15,7 @@ func TestLoadConfig(t *testing.T) {
 		} `json:"c"`
 	}
 	err := LoadConfig("./temp.yaml", &val)
+	require.NoError(t, err)
 	t.Log("err: ", err)
 	t.Log("val: ", val)
 }
