@@ -46,3 +46,17 @@ func (r *RedisClient) Get(ctx context.Context, key string, ptr any) error {
 	}
 	return stringx.StrCopyToPtr(valStr, ptr)
 }
+
+func (r *RedisClient) Incr(ctx context.Context, key string, tm ...int64) (int64, error) {
+	val, err := r.client.Incr(ctx, key).Result()
+	if err != nil {
+		return 0, err
+	}
+	// 设置过期时间
+	var expiration time.Duration = 0
+	if tm != nil && tm[0] > 0 {
+		expiration = time.Duration(tm[0]) * time.Second
+		err = r.client.Expire(ctx, key, expiration).Err()
+	}
+	return val, err
+}
